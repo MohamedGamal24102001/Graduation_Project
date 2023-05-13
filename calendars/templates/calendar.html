@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="wrapper">
+  <header>
+    <p class="current-date"></p>
+    <div class="icons">
+      <span id="prev" class="material-symbols-rounded">chevron_left</span>
+      <span id="next" class="material-symbols-rounded">chevron_right</span>
+    </div>
+  </header>
+  <div class="calendar">
+    <ul class="weeks">
+      <li>Sun</li>
+      <li>Mon</li>
+      <li>Tue</li>
+      <li>Wed</li>
+      <li>Thu</li>
+      <li>Fri</li>
+      <li>Sat</li>
+    </ul>
+    <ul class="days">
+      {% for day in days %}
+        <li data-date="{{ day }}">{{ day|date:"j" }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'script.js' %}" defer></script>
+<script>
+  const currentDateElem = document.querySelector('.current-date');
+  const prevBtn = document.querySelector('#prev');
+  const nextBtn = document.querySelector('#next');
+  const daysElem = document.querySelector('.days');
+  const eventsUrl = '{% url "events" %}';
+
+  let currentDate = new Date();
+  let currentYear = currentDate.getFullYear();
+  let currentMonth = currentDate.getMonth();
+
+  function showCalendar(year, month) {
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDate = new Date(firstDay.getFullYear(), firstDay.getMonth(), firstDay.getDate() - firstDay.getDay());
+    const endDate = new Date(lastDay.getFullYear(), lastDay.getMonth(), lastDay.getDate() + (6 - lastDay.getDay()));
+
+    const days = [];
+    let currentDate = startDate;
+    while (currentDate <= endDate) {
+      days.push(currentDate);
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1);
+    }
+
+    const daysElem = document.querySelector('.days');
+    daysElem.innerHTML = '';
+    for (const day of days) {
+      const li = document.createElement('li');
+      li.dataset.date = day.toISOString().split('T')[0];
+      li.textContent = day.getDate();
+      daysElem.appendChild(li);
+    }
+
+    const currentMonthStr = `${firstDay.toLocaleString('default', { month: 'long' })} ${firstDay.getFullYear()}`;
+    currentDateElem.textContent = currentMonthStr;
+    fetchEvents(year, month);
+  }
+
+  function fetchEvents(year, month) {
+    const startDate = new Date(year, month, 1).toISOString().split('T')[0];
+    const endDate = new Date(year, month + 1, 0).toISOString().split('T')[0];
+    const url = `${eventsUrl}?start_date=${startDate}&end_date=${endDate}`;
+    fetch(url)
+      .then(response => response.json())
+      .then(events => {
+        for (const event of events) {
+          const li = document.querySelector(`li[data-date="${event.start_date}"]`);
+          if (li) {
+            const span = document.createElement('span');
+            span.classList.add('event');
+            span.textContent = event.title;
+            li.appendChild(span);
+          }
+        }
+      });
+  }
+
+  showCalendar(currentYear, currentMonth);
+
+  prevBtn.addEventListener('click', () => {
+    currentMonth--;
+    if (currentMonth < 0) {
+      currentYear--;
+      currentMonth = 11;
+    }
+    showCalendar(currentYear, currentMonth);
+  });
+
+  nextBtn.addEventListener('click', () => {
+    currentMonth++;
+    if (currentMonth > 11) {
+      currentYear++;
+      currentMonth = 0;
+    }
+    showCalendar(currentYear, currentMonth);
+  });
+</script>
+{% endblock %}
+{% endblock %}

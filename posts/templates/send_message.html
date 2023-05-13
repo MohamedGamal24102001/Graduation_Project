@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+  {% block title %}
+      Send a new message
+  {% endblock %}
+
+
+{% block content %}
+{% if user.is_authenticated %}
+        <h1>Send Message...</h1>
+        <br/>
+        <div class = "form-group">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.media }}
+                {{ form.as_p }}
+                <button class="btn btn-dark">Send</button>
+            </form>
+        </div>
+
+        <script>
+            var name = "{{ user.id }}";
+            document.getElementById("elder").value = name;
+
+        </script>
+
+    {% else %}
+    <h1>Sorry, you can't send messages</h1>
+    <p> you are being redirected to the login page in 3 seconds<meta http-equiv="refresh" content="3; {% url 'login' %}" /></p>
+    {% endif %}
+
+{% endblock %}
+
+

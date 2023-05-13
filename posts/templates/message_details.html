@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+  {% block title %}
+      {{ post.to }}
+  {% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+
+        <h1>{{ post.title }}</h1>
+        <small>By:
+            {{ post.author.first_name }}
+            {{ post.author.last_name }} -
+            {{ post.email_date }}
+
+        </small><br/>
+        <hr>
+        
+        <br/><br/>
+        {{ post.body|safe }}
+
+        <br/><br/>
+
+        <hr>
+            <div class="col-md-10">
+              <div class="card-body">
+                <h5 class="card-title">
+                    {{ post.author.first_name }}
+                    {{ post.author.last_name }}
+                </h5>
+                  <p class="small text-muted">
+                      <a href="{% url 'show_profile_page' post.author.profile.id %}">Profile Page</a>
+                  </p>
+                  <p class="card-text">
+                    {{ post.author.profile.bio }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <br/><br/><br/>
+
+    {% else %}
+    <meta http-equiv="refresh" content="0; {% url 'login' %}" />
+    {% endif %}
+ {% endblock %}

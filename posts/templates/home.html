@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+
+{% if user.is_authenticated %}
+
+    <h1>Inbox</h1>
+            
+            {% for post in object_list %}
+           
+            <div style="display: inline-block; margin: 0px 50px 0px 78px;">
+            <div class="card text-white bg-dark mb-3" style="width: 500px; height: 226px;">
+              
+              <div class="row g-0">
+                <div class="col-md-4" style="width: 160px; height: 223px;">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">From {{ post.author.email }}</h5>  
+                    <br/>
+                    <h5 class="card-title">To {{ post.to }}</h5>
+                    
+                    <p class="card-text"><small>{{ post.body|safe }}</small></p>
+                    <h6 class="card-text">Category: {{ post.category }} </h6>
+
+                  <p class="card-text"><small class="text-muted">{{ post.email_date }}</small></p>   
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+            
+            {% endfor %}
+
+
+{% else %}
+<meta http-equiv="refresh" content="0; {% url 'login' %}" />
+{% endif %}
+
+
+{% endblock %}

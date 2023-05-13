@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+  {% block title %}
+      Edit Profile Page
+  {% endblock %}
+
+
+{% block content %}
+<div id="bg-image">
+{% if user.is_authenticated %}
+
+    {% if user.id == profile.user.id %}
+        <h1>Edit Profile Page...</h1>
+        <br/>
+        <div class = "form-group">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-dark">Update Profile Page</button>
+            </form>
+        </div>
+
+    {% else %}
+    You are not the correct User to Edit This Page...
+    {% endif %}
+{% else %}
+    <meta http-equiv="refresh" content="0; {% url 'login' %}" />
+{% endif %}
+    </div>
+{% endblock %}
+
+

@@ -1,0 +1,27 @@
+h1{
+    text-align: center;
+    color:blanchedalmond;
+}
+.form_1{
+
+    background-color: black;
+    margin-left: 50px;
+    color: blueviolet;
+    width: fit-content;
+    border: black;
+    border-style: double;
+    padding: 10px;
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 5%;
+}
+
+
+form{
+    text-align: center;
+    color: blanchedalmond;
+}
+label{
+    background-color: black;
+}
